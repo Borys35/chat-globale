@@ -2,6 +2,7 @@ $white: #fff;
 $grey100: #292929;
 $grey200: #313131;
 $grey300: #414141;
+$grey400: #ccc;
 $blue: #3554c2;
 
 #root {
@@ -54,23 +55,44 @@ $blue: #3554c2;
     height: 48px;
     border-radius: 50%;
   }
-  &__text-container {
-    border-radius: 32px;
-    padding: 1rem;
-    max-width: 300px;
+  &__message-container {
     &--sent {
       margin-right: 1rem;
-      background-color: $blue;
+      text-align: right;
     }
     &--received {
       margin-left: 1rem;
-      background-color: $grey200;
+      text-align: left;
     }
+  }
+  &__timestamp {
+    color: $grey400;
+    font-size: 0.6rem;
+    margin: 0 5px 3px 5px;
+    text-transform: uppercase;
+  }
+  &__text-container {
+    border-radius: 32px;
+    padding: 0.75rem 1.25rem;
+    max-width: 300px;
+    width: fit-content;
+    &--sent {
+      background-color: $blue;
+      margin-left: auto;
+    }
+    &--received {
+      background-color: $grey200;
+      margin-right: auto;
+    }
+  }
+  &__name {
+    color: $grey400;
+    font-size: 0.7rem;
+    margin-bottom: 3px;
+    text-transform: uppercase;
   }
   &__text {
     word-break: break-all;
-  }
-  &__timestamp {
   }
   &__form {
     width: 100%;

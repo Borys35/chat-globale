@@ -11,6 +11,17 @@ export default function Chat() {
   const messagesRef = firestore().collection('messages');
   const query = messagesRef.orderBy('createdAt').limitToLast(25);
 
+  // const conversationsRef = firestore().collection('conversations');
+  // const query1 = conversationsRef
+  //   .where('uids', 'array-contains', auth().currentUser.uid)
+  //   .where('type', '==', 'friend');
+  // const [conversations] = useCollectionData(query1, {
+  //   idField: 'id',
+  // });
+  // useEffect(() => {
+  //   console.log('conversations', conversations);
+  // }, [conversations]);
+
   const [messages, loading] = useCollectionData(query, { idField: 'id' });
 
   const dummyRef = useRef(null);
@@ -19,7 +30,7 @@ export default function Chat() {
   async function handleSendMessage(e) {
     e.preventDefault();
 
-    const { uid, photoURL } = auth().currentUser;
+    const { uid, displayName, photoURL } = auth().currentUser;
 
     setFormValue('');
 
@@ -27,6 +38,7 @@ export default function Chat() {
       text: formValue,
       createdAt: firestore.FieldValue.serverTimestamp(),
       uid,
+      displayName,
       photoURL,
     });
 
@@ -34,7 +46,7 @@ export default function Chat() {
   }
 
   useEffect(() => {
-    dummyRef.current.scrollIntoView({ behavior: 'smooth' });
+    //dummyRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [loading]);
 
   return (

@@ -1,31 +1,52 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { firestore, auth } from '../../services/firebase';
+import { switchConversation } from '../../redux/actions';
 import Button from '../atoms/Button';
-import Navbar from '../partials/Navbar';
 import ChatMessage from './ChatMessage';
 
-export default function Chat() {
-  const messagesRef = firestore().collection('messages');
-  const query = messagesRef.orderBy('createdAt').limitToLast(25);
-
-  // const conversationsRef = firestore().collection('conversations');
-  // const query1 = conversationsRef
-  //   .where('uids', 'array-contains', auth().currentUser.uid)
-  //   .where('type', '==', 'friend');
-  // const [conversations] = useCollectionData(query1, {
-  //   idField: 'id',
-  // });
-  // useEffect(() => {
-  //   console.log('conversations', conversations);
-  // }, [conversations]);
-
-  const [messages, loading] = useCollectionData(query, { idField: 'id' });
-
+export default function Chat({ className }) {
   const dummyRef = useRef(null);
+  const dispatch = useDispatch();
   const [formValue, setFormValue] = useState('');
+  const [formDisabled, setFormDisabled] = useState(true);
+  const [index, setIndex] = useState(0);
+  const conversationId = useSelector(
+    (state) => state.conversations.currentConversationId
+  );
+
+  const conversationsRef = firestore().collection('conversations');
+  const query = conversationsRef.where(
+    'uids',
+    'array-contains',
+    auth().currentUser.uid
+  );
+  const [conversations, loading] = useCollectionData(query, {
+    idField: 'id',
+  });
+
+  useEffect(() => {
+    if (!loading && conversations.length)
+      dispatch(switchConversation(conversations[0].id));
+  }, [loading]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+
+    setFormValue('');
+
+    const i = conversations.findIndex((conv) => conv.id === conversationId);
+
+    if (i === -1) setFormDisabled(true);
+    else setFormDisabled(false);
+
+    setIndex(i);
+
+    dummyRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [conversationId]);
 
   async function handleSendMessage(e) {
     e.preventDefault();
@@ -34,38 +55,45 @@ export default function Chat() {
 
     setFormValue('');
 
-    await messagesRef.add({
-      text: formValue,
-      createdAt: firestore.FieldValue.serverTimestamp(),
-      uid,
-      displayName,
-      photoURL,
+    const timestamp = firestore.FieldValue.serverTimestamp();
+    await conversationsRef.doc(conversationId).update({
+      messages: firestore.FieldValue.arrayUnion({
+        text: formValue,
+        createdAt: new Date(),
+        uid,
+        displayName,
+        photoURL,
+      }),
     });
 
     dummyRef.current.scrollIntoView({ behavior: 'smooth' });
   }
 
-  useEffect(() => {
-    //dummyRef.current.scrollIntoView({ behavior: 'smooth' });
-  }, [loading]);
-
   return (
-    <div className={`chat`}>
-      <Navbar />
+    <div className={`chat ${className}`}>
       <div className={`chat__list`}>
-        {messages &&
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+        {!loading && conversations[index]
+          ? conversations[index].messages &&
+            conversations[index].messages.length
+            ? conversations[index].messages.map((msg) => (
+                <ChatMessage key={msg.id} message={msg} />
+              ))
+            : 'No messages'
+          : 'No conversation selected'}
+        {/* {messages &&
+          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)} */}
         <div ref={dummyRef}></div>
       </div>
       <form className={`chat__form`} onSubmit={handleSendMessage}>
         <input
           className={`chat__form__input`}
+          disabled={formDisabled}
           type="text"
           placeholder="Enter a message..."
           value={formValue}
           onChange={(e) => setFormValue(e.target.value)}
         />
-        <Button disabled={!formValue}>
+        <Button disabled={!formValue || formDisabled}>
           <FaPaperPlane />
         </Button>
       </form>

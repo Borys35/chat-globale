@@ -14,3 +14,14 @@ firebase.initializeApp({
 export const auth = firebase.auth;
 export const firestore = firebase.firestore;
 export const analytics = firebase.analytics;
+
+auth().onAuthStateChanged((user) => {
+  firestore()
+    .collection('users')
+    .doc(user.uid)
+    .set({
+      uid: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    });
+});

@@ -1,11 +1,14 @@
 import produce from 'immer';
 
-import { SWITCH_CONVERSATION } from '../actionTypes';
+import * as actions from '../actionTypes';
 
 export default produce((draft, action) => {
   switch (action.type) {
-    case SWITCH_CONVERSATION:
+    case actions.SWITCH_CONVERSATION:
       draft.currentConversationId = action.payload.id;
+      break;
+    case actions.JOIN_VOICE_CHAT:
+      draft.voiceChatConversationId = action.payload.id;
       break;
     default:
       break;

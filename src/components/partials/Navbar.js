@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <nav className={`navbar`}>
-      <h1>Chat{/* GLOBALE */}</h1>
+      <h1>Chat GLOBALE</h1>
       <Button onClick={handleSignOut}>
         <FaSignOutAlt />
       </Button>

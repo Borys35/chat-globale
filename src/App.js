@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 
 import 'firebase/auth';
@@ -17,13 +17,6 @@ import Navbar from './components/partials/Navbar';
 function App() {
   const [screenLoading, setScreenLoading] = useState(true);
   const [user, loading] = useAuthState(auth());
-
-  useEffect(() => {
-    if (!user) return;
-
-    const usersRef = firestore().collection('users');
-    usersRef.doc(user.uid); //.set({});
-  }, [user]);
 
   return (
     <main className="app">

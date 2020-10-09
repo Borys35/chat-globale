@@ -39,7 +39,7 @@ export default function Friends() {
 
     await conversationsRef.add({
       members: [{ uid, displayName, photoURL }, addedUser],
-      message: [],
+      messages: [],
       type: 'friend',
       uids: [uid, addedUser.uid],
     });

@@ -5,17 +5,17 @@ $grey300: #414141;
 $grey400: #ccc;
 $blue: #3554c2;
 
-#root {
-  font-size: 12px;
-  @media (min-width: 600px) {
-    font-size: 16px;
-  }
+:root {
+  font-size: 16px;
 }
 
 .app {
-  height: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: $grey100;
   color: $white;
+  overflow: hidden;
 }
 
 .navbar {
@@ -26,14 +26,21 @@ $blue: #3554c2;
   align-items: center;
 }
 
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  &__chat {
+    flex: 1;
+  }
+}
+
 .chat {
-  height: 80vh;
   display: flex;
   flex-direction: column;
   &__list {
-    height: 100%;
+    flex-basis: 100px;
     padding: 0 1rem;
-    flex: 1;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -51,8 +58,8 @@ $blue: #3554c2;
     }
   }
   &__img {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
   }
   &__message-container {
@@ -119,7 +126,7 @@ $blue: #3554c2;
 
 .button {
   margin: 0;
-  padding: 0.6rem 1.5rem;
+  padding: 0.4rem 1.3rem;
   border: none;
   border-radius: 32px;
   min-width: 6rem;
@@ -138,7 +145,8 @@ $blue: #3554c2;
   margin: 0.5rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-  grid-template-rows: repeat(auto-fit, minmax(60px, 50px));
+  grid-template-rows: repeat(auto-fit, minmax(50px, 60px));
+  overflow: hidden auto;
   place-items: center;
   width: 140px;
   &__item {
@@ -154,13 +162,6 @@ $blue: #3554c2;
   }
 }
 
-.main-wrapper {
-  display: flex;
-  &__chat {
-    flex: 1;
-  }
-}
-
 .sign-in-container {
   height: 100%;
   display: flex;
@@ -173,4 +174,24 @@ $blue: #3554c2;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 13px;
+  }
+
+  .list {
+    display: flex;
+    overflow: auto hidden;
+    width: 100%;
+  }
+
+  .main-wrapper {
+    flex-direction: column;
+  }
+
+  .button {
+    min-width: 0;
+  }
 }

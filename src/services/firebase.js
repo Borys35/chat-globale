@@ -1,7 +1,9 @@
 import firebase from 'firebase/app';
 
+import secrets from '../secrets.json';
+
 firebase.initializeApp({
-  apiKey: 'AIzaSyAYxW-fdHDJn6VvGF8SnG81dqxJWVZ8l_I',
+  apiKey: secrets.apiKey,
   authDomain: 'chat-globale.firebaseapp.com',
   databaseURL: 'https://chat-globale.firebaseio.com',
   projectId: 'chat-globale',
@@ -16,12 +18,9 @@ export const firestore = firebase.firestore;
 export const analytics = firebase.analytics;
 
 auth().onAuthStateChanged((user) => {
-  firestore()
-    .collection('users')
-    .doc(user.uid)
-    .set({
-      uid: user.uid,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-    });
+  firestore().collection('users').doc(user.uid).set({
+    uid: user.uid,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+  });
 });
